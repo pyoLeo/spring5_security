@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.bit.ex.mapper.EmpMapper">
+
+	<resultMap id="EmpMap" type="edu.bit.ex.vo.EmpVO">
+		<result property="username" column="username"/>
+	    <result property="password" column="password"/>
+	    <result property="enabled" column="enabled"/>
+		<collection property="authList" resultMap="authMap"></collection>
+	</resultMap>
+
+	<select id="getEmp" resultType="edu.bit.ex.vo.EmpVO">
+		select * from emp3 where ename = #{ename}
+	</select>
+
+</mapper>

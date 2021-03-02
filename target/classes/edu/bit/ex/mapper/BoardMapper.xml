@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.bit.ex.mapper.BoardMapper">
+	
+	<select id="getContent" resultType="edu.bit.ex.vo.BoardVO">
+	<![CDATA[
+		select * from mvc_board2 where bId = #{bId}
+	]]>
+	</select>
+	
+	<update id="upHit">
+	<![CDATA[
+		update mvc_board2 set bHit = bHit+1 where bId = #{bId}
+	]]>
+	</update>
+	
+	<update id="replyShape" >
+	<![CDATA[
+		update mvc_board2 set bStep = bStep + 1 where bGroup = #{bGroup} and bStep > #{bStep}
+	]]>
+	</update>
+	
+	<insert id="reply" >
+	<![CDATA[
+		insert into mvc_board2 (bId, bName, bTitle, bContent, bGroup, bStep, bIndent) values (mvc_board2_seq.nextval, #{bName}, #{bTitle},#{bContent}, #{bGroup}, #{bStep}+1, #{bIndent}+1)
+	]]>
+	</insert>
+	
+	<insert id="write" >
+	<![CDATA[
+		insert into mvc_board2 (bId, bName, bTitle, bContent, bHit, bGroup, bStep, bIndent) values (mvc_board2_seq.nextval, #{bName}, #{bTitle}, #{bContent}, 0, mvc_board2_seq.currval, 0, 0)
+	]]>
+	</insert>
+	
+	<delete id="delete" >
+	<![CDATA[
+		delete from mvc_board2 where bId = #{bId}
+	]]>
+	</delete>
+	
+	<update id="modify">
+	<![CDATA[
+		update mvc_board2 set bName = #{bName}, bTitle = #{bTitle}, bContent = #{bContent} where bId = #{bId}
+	]]>
+	</update>
+	
+	<select id="getListWithPaging" resultType="edu.bit.ex.vo.BoardVO">
+		<![CDATA[
+			SELECT * FROM (
+			     SELECT ROWNUM AS RNUM, A.* FROM (
+			        		SELECT
+			                    *
+			                FROM
+			                    mvc_board2 
+			                order by bGroup desc, bStep asc   
+			    ) A WHERE ROWNUM <= #{pageNum} * #{amount}
+			) WHERE RNUM > (#{pageNum}-1) * #{amount}
+		]]>
+	</select>
+	
+	<select id="getTotalCount" resultType="int">
+	<![CDATA[
+		select count(*)	from mvc_board2
+	]]>
+	</select>
+</mapper>
